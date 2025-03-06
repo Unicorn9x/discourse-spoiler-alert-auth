@@ -1,0 +1,22 @@
+.spoiler-auth {
+  &.spoiler-blurred {
+    filter: blur(0.5em);
+    cursor: pointer;
+  }
+
+  .spoiler-auth-prompt {
+    text-align: center;
+    padding: 1em;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+    
+    .btn {
+      margin: 0;
+    }
+  }
+
+  &:not(.spoiler-blurred) {
+    filter: none;
+    cursor: auto;
+  }
+} 
