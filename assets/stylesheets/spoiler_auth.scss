@@ -30,4 +30,11 @@
     cursor: auto;
     user-select: text;
   }
+}
+
+// Ensure spoilers are properly hidden in topic excerpts
+.topic-excerpt {
+  .spoiler-auth {
+    display: none;
+  }
 } 

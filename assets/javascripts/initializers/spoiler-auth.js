@@ -2,7 +2,6 @@ import { withPluginApi } from "discourse/lib/plugin-api";
 import { i18n } from "discourse-i18n";
 
 function setupSpoilerAuth(api) {
-  // Handle cooked elements
   api.decorateCookedElement((element) => {
     try {
       if (!element) return;
@@ -14,20 +13,9 @@ function setupSpoilerAuth(api) {
         if (!spoiler) return;
 
         try {
-          // Store original content before any modifications
-          const originalContent = spoiler.innerHTML;
+          // Store original content
+          const originalContent = spoiler.getAttribute("data-original-content");
           if (!originalContent) return;
-          
-          // Handle non-logged in users
-          if (!api.getCurrentUser()) {
-            spoiler.innerHTML = `
-              <div class="spoiler-auth-prompt">
-                <a href="/login" class="btn btn-primary">
-                  ${i18n("spoiler_auth.login_to_reveal")}
-                </a>
-              </div>
-            `;
-          }
           
           // Add click handler for logged-in users
           const clickHandler = (event) => {

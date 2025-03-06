@@ -1,65 +1,37 @@
 # name: spoiler-alert-auth
 # about: Extends Discourse Spoiler-Alert to only allow logged-in users to reveal spoilers
-# version: 1.3.0
-# authors: Unicorn9x
+# version: 1.0.0
+# authors: Your Name
 
 enabled_site_setting :spoiler_auth_enabled
 
 register_asset "stylesheets/spoiler_auth.scss"
 
 after_initialize do
-  on(:reduce_cooked) do |fragment, post|
+  # Register our custom markdown processor
+  register_html_builder('post') do |context|
     begin
-      return if fragment.nil? || post.nil?
+      next if context.nil? || context.post.nil?
       
-      fragment
-        .css(".spoiler")
-        .each do |el|
-          next if el.nil? || el.inner_html.blank?
-          
-          begin
-            link = fragment.document.create_element("a")
-            link["href"] = post.url
-            link.content = I18n.t("spoiler_auth.excerpt_spoiler")
-            el.inner_html = link.to_html
-          rescue => e
-            Rails.logger.error("Spoiler Auth Plugin Error (reduce_cooked element): #{e.message}")
-            next
-          end
-        end
+      # Only process if the user is not logged in
+      if !context.user
+        context.post.cooked = context.post.cooked.gsub(
+          /<div class="spoiler">(.*?)<\/div>/m,
+          '<div class="spoiler spoiler-auth spoiler-blurred"><div class="spoiler-auth-prompt"><a href="/login" class="btn btn-primary">' + I18n.t("spoiler_auth.login_to_reveal") + '</a></div></div>'
+        )
+      end
     rescue => e
-      Rails.logger.error("Spoiler Auth Plugin Error (reduce_cooked): #{e.message}\n#{e.backtrace.join("\n")}")
+      Rails.logger.error("Spoiler Auth Plugin Error (html_builder): #{e.message}\n#{e.backtrace.join("\n")}")
     end
   end
 
-  # Remove spoilers from topic excerpts
+  # Handle topic excerpts
   on(:reduce_excerpt) do |doc, post|
     begin
       return if doc.nil? || post.nil?
       doc.css(".spoiler").remove
     rescue => e
       Rails.logger.error("Spoiler Auth Plugin Error (reduce_excerpt): #{e.message}\n#{e.backtrace.join("\n")}")
-    end
-  end
-
-  # Handle post cooking
-  on(:post_process_cooked) do |doc, post|
-    begin
-      return if doc.nil? || post.nil?
-      
-      doc.css(".spoiler").each do |el|
-        next if el.nil? || el.inner_html.blank?
-        
-        begin
-          el.add_class("spoiler-auth")
-          el.add_class("spoiler-blurred")
-        rescue => e
-          Rails.logger.error("Spoiler Auth Plugin Error (post_process_cooked): #{e.message}")
-          next
-        end
-      end
-    rescue => e
-      Rails.logger.error("Spoiler Auth Plugin Error (post_process_cooked): #{e.message}\n#{e.backtrace.join("\n")}")
     end
   end
 end 
