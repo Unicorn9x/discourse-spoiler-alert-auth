@@ -2,6 +2,7 @@
   position: relative;
   transition: filter 0.3s ease-in-out;
   display: block;
+  min-height: 2em;
   
   &.spoiler-blurred {
     filter: blur(0.5em);
@@ -19,6 +20,11 @@
     background: rgba(0, 0, 0, 0.05);
     border-radius: 4px;
     margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
     
     .btn {
       margin: 0;
@@ -30,6 +36,10 @@
     filter: none;
     cursor: auto;
     user-select: text;
+    
+    .spoiler-auth-prompt {
+      display: none;
+    }
   }
 }
 
@@ -43,4 +53,12 @@
 // Handle inline spoilers
 span.spoiler-auth {
   display: inline-block;
+  min-height: 1.5em;
+  
+  .spoiler-auth-prompt {
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: none;
+  }
 } 

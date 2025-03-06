@@ -1,7 +1,7 @@
 # name: spoiler-alert-auth
 # about: Extends Discourse Spoiler-Alert to only allow logged-in users to reveal spoilers
-# version: 1.5.0
-# authors: Unicorn9x
+# version: 1.0.0
+# authors: Your Name
 
 enabled_site_setting :spoiler_auth_enabled
 
@@ -20,20 +20,24 @@ after_initialize do
           
           begin
             # Store original content
-            el["data-original-content"] = el.inner_html
+            original_content = el.inner_html
+            el.inner_html = ""
             
-            # Replace content with login prompt
-            el.inner_html = <<~HTML
-              <div class="spoiler-auth-prompt">
-                <a href="/login" class="btn btn-primary">
-                  #{I18n.t("spoiler_auth.login_to_reveal")}
-                </a>
-              </div>
-            HTML
+            # Create login prompt
+            prompt = doc.create_element("div")
+            prompt["class"] = "spoiler-auth-prompt"
+            
+            link = doc.create_element("a")
+            link["href"] = "/login"
+            link["class"] = "btn btn-primary"
+            link.content = I18n.t("spoiler_auth.login_to_reveal")
+            
+            prompt.add_child(link)
+            el.add_child(prompt)
             
             # Add necessary classes
-            el.add_class("spoiler-auth")
-            el.add_class("spoiler-blurred")
+            el["class"] = "spoiler spoiler-auth spoiler-blurred"
+            el["data-original-content"] = original_content
           rescue => e
             Rails.logger.error("Spoiler Auth Plugin Error (post_process_cooked element): #{e.message}")
             next
