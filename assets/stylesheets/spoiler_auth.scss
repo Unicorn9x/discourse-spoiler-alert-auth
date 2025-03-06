@@ -1,6 +1,7 @@
 .spoiler-auth {
   position: relative;
   transition: filter 0.3s ease-in-out;
+  display: block;
   
   &.spoiler-blurred {
     filter: blur(0.5em);
@@ -37,4 +38,9 @@
   .spoiler-auth {
     display: none;
   }
+}
+
+// Handle inline spoilers
+span.spoiler-auth {
+  display: inline-block;
 } 
