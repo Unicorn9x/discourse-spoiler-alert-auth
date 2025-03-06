@@ -3,11 +3,22 @@
 # version: 1.0.0
 # authors: Unicorn9x
 
-enabled_site_setting :spoiler_alert_auth_enabled
+enabled_site_setting :spoiler_auth_enabled
 
-register_asset "javascripts/discourse/templates/components/spoiler-alert-auth.js"
-register_asset "stylesheets/spoiler-alert-auth.scss"
+register_asset "stylesheets/spoiler_auth.scss"
 
 after_initialize do
-  # Add any initialization code here if needed
-end 
+  on(:reduce_cooked) do |fragment, post|
+    fragment
+      .css(".spoiler")
+      .each do |el|
+        link = fragment.document.create_element("a")
+        link["href"] = post.url
+        link.content = I18n.t("spoiler_auth.excerpt_spoiler")
+        el.inner_html = link.to_html
+      end
+  end
+
+  # Remove spoilers from topic excerpts
+  on(:reduce_excerpt) { |doc, post| doc.css(".spoiler").remove }
+end
