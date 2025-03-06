@@ -7,7 +7,7 @@ function setupSpoilerAuth(api) {
     try {
       if (!element) return;
       
-      const spoilers = element.querySelectorAll(".spoiler");
+      const spoilers = element.querySelectorAll(".spoiler-auth");
       if (!spoilers.length) return;
 
       spoilers.forEach((spoiler) => {
@@ -17,12 +17,6 @@ function setupSpoilerAuth(api) {
           // Store original content before any modifications
           const originalContent = spoiler.innerHTML;
           if (!originalContent) return;
-
-          // Add necessary classes
-          spoiler.classList.remove("spoiler");
-          spoiler.classList.add("spoiled");
-          spoiler.classList.add("spoiler-auth");
-          spoiler.classList.add("spoiler-blurred");
           
           // Handle non-logged in users
           if (!api.getCurrentUser()) {
@@ -55,52 +49,6 @@ function setupSpoilerAuth(api) {
       console.error("Error in spoiler-auth setup:", e);
     }
   }, { id: "spoiler-auth" });
-
-  // Handle topic view
-  api.decorateTopicView((topicView) => {
-    try {
-      if (!topicView) return;
-      
-      // Ensure spoilers are properly initialized in the topic view
-      const posts = topicView.posts;
-      if (!posts || !posts.length) return;
-
-      posts.forEach((post) => {
-        if (!post || !post.element) return;
-        
-        try {
-          const spoilers = post.element.querySelectorAll(".spoiler");
-          if (!spoilers.length) return;
-
-          spoilers.forEach((spoiler) => {
-            if (!spoiler) return;
-            
-            const originalContent = spoiler.innerHTML;
-            if (!originalContent) return;
-
-            spoiler.classList.remove("spoiler");
-            spoiler.classList.add("spoiled");
-            spoiler.classList.add("spoiler-auth");
-            spoiler.classList.add("spoiler-blurred");
-
-            if (!api.getCurrentUser()) {
-              spoiler.innerHTML = `
-                <div class="spoiler-auth-prompt">
-                  <a href="/login" class="btn btn-primary">
-                    ${i18n("spoiler_auth.login_to_reveal")}
-                  </a>
-                </div>
-              `;
-            }
-          });
-        } catch (e) {
-          console.error("Error processing post spoilers:", e);
-        }
-      });
-    } catch (e) {
-      console.error("Error in topic view decoration:", e);
-    }
-  });
 }
 
 export default {

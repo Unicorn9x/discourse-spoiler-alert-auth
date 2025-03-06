@@ -1,7 +1,7 @@
 # name: spoiler-alert-auth
 # about: Extends Discourse Spoiler-Alert to only allow logged-in users to reveal spoilers
-# version: 1.2.0
-# authors: Unicorn9x
+# version: 1.0.0
+# authors: Your Name
 
 enabled_site_setting :spoiler_auth_enabled
 
@@ -42,27 +42,24 @@ after_initialize do
     end
   end
 
-  # Add a topic view decorator to handle spoilers
-  on(:topic_view_ready) do |topic_view|
+  # Handle post cooking
+  on(:post_process_cooked) do |doc, post|
     begin
-      return if topic_view.nil?
+      return if doc.nil? || post.nil?
       
-      # Ensure spoilers are properly initialized in the topic view
-      topic_view.posts.each do |post|
-        next if post.nil? || post.cooked.nil?
+      doc.css(".spoiler").each do |el|
+        next if el.nil? || el.inner_html.blank?
         
         begin
-          post.cooked = post.cooked.gsub(
-            /\[spoiler\](.*?)\[\/spoiler\]/m,
-            '<div class="spoiler">\1</div>'
-          )
+          el.add_class("spoiler-auth")
+          el.add_class("spoiler-blurred")
         rescue => e
-          Rails.logger.error("Spoiler Auth Plugin Error (topic_view_ready post): #{e.message}")
+          Rails.logger.error("Spoiler Auth Plugin Error (post_process_cooked): #{e.message}")
           next
         end
       end
     rescue => e
-      Rails.logger.error("Spoiler Auth Plugin Error (topic_view_ready): #{e.message}\n#{e.backtrace.join("\n")}")
+      Rails.logger.error("Spoiler Auth Plugin Error (post_process_cooked): #{e.message}\n#{e.backtrace.join("\n")}")
     end
   end
 end 
