@@ -1,0 +1,12 @@
+.spoiler {
+  &.spoiler-hidden {
+    &:not(.current-user) {
+      cursor: not-allowed;
+      opacity: 0.8;
+      
+      &:hover {
+        background-color: var(--primary-low);
+      }
+    }
+  }
+} 
