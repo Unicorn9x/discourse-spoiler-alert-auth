@@ -1,7 +1,7 @@
 # name: spoiler-alert-auth
 # about: Extends Discourse Spoiler-Alert to only allow logged-in users to reveal hidden text
 # version: 1.0.0
-# authors: Your Name
+# authors: Unicorn9x
 
 enabled_site_setting :spoiler_alert_auth_enabled
 
