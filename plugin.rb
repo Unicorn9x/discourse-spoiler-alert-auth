@@ -1,6 +1,6 @@
 # name: spoiler-alert-auth
 # about: Extends Discourse Spoiler-Alert to only allow logged-in users to reveal spoilers
-# version: 1.8.2
+# version: 1.8.3
 # authors: Unicorn9x
 
 enabled_site_setting :spoiler_auth_enabled
@@ -15,9 +15,11 @@ after_initialize do
     end
   end
 
-  # Add our custom class to allowed classes
-  if defined?(PrettyText)
-    PrettyText.allowed_classes.push("spoiler-auth", "spoiler-blurred")
+  # Add our custom classes to allowed classes
+  on(:before_post_process_cooked) do |doc, state|
+    doc.css(".spoiler").each do |el|
+      el["class"] = "#{el["class"]} spoiler-auth spoiler-blurred".strip
+    end
   end
 
   # Process spoilers in posts
