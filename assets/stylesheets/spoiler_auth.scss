@@ -90,8 +90,43 @@ span.spoiler-auth {
   font-size: 0.9em;
   white-space: nowrap;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
   
   &::after {
     border-top-color: var(--primary);
+  }
+}
+
+// Ensure tooltip is visible
+[data-tooltip] {
+  position: relative;
+  cursor: pointer;
+  
+  &:hover::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.5em 1em;
+    background: var(--primary);
+    color: var(--secondary);
+    border-radius: 4px;
+    font-size: 0.9em;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    margin-bottom: 0.5em;
+    
+    &::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 0.5em;
+      border-style: solid;
+      border-color: var(--primary) transparent transparent transparent;
+    }
   }
 } 
