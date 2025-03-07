@@ -23,24 +23,26 @@ function initializeSpoilerAuth(api) {
         }
 
         try {
-          if (!currentUser) {
-            // For non-logged in users, show login prompt
-            const prompt = document.createElement("div");
-            prompt.className = "spoiler-auth-prompt";
-            prompt.innerHTML = `
-              <a href="/login" class="btn btn-primary">
-                ${i18n.t("spoiler_auth.login_to_reveal")}
-              </a>
-            `;
-            spoiler.appendChild(prompt);
-          } else {
+          if (currentUser) {
             // For logged-in users, allow revealing on click
+            const originalContent = spoiler.getAttribute("data-spoiler-content");
+            if (!originalContent) return;
+
             spoiler.addEventListener("click", function handler(e) {
               if (e.target.tagName !== "A") {
                 e.preventDefault();
                 e.stopPropagation();
                 this.classList.remove("spoiler-blurred");
+                this.innerHTML = originalContent;
                 this.removeEventListener("click", handler);
+              }
+            });
+          } else {
+            // For non-logged in users, ensure they can't reveal content
+            spoiler.addEventListener("click", function(e) {
+              if (e.target.tagName !== "A") {
+                e.preventDefault();
+                e.stopPropagation();
               }
             });
           }
