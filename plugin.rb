@@ -1,6 +1,6 @@
 # name: spoiler-alert-auth
 # about: Extends Discourse Spoiler-Alert to only allow logged-in users to reveal spoilers
-# version: 1.8.7
+# version: 1.8.8
 # authors: Unicorn9x
 
 enabled_site_setting :spoiler_auth_enabled
@@ -24,16 +24,14 @@ after_initialize do
       el["data-spoiler-content"] = original_content
       el["class"] = "#{el["class"]} spoiler-auth spoiler-blurred".strip
 
-      # For non-logged-in users, create login prompt
+      # For non-logged-in users, replace content with login prompt
       unless state&.user
-        prompt_html = <<~HTML
+        el["data-requires-auth"] = "true"
+        el.inner_html = <<~HTML
           <div class="spoiler-auth-prompt">
             <a href="/login" class="btn btn-primary">#{I18n.t("login_required")}</a>
           </div>
-          <div class="spoiler-content-placeholder">#{original_content}</div>
         HTML
-        
-        el.inner_html = prompt_html
       end
     end
   end

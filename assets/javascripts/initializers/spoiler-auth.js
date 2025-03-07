@@ -25,31 +25,26 @@ function initializeSpoilerAuth(api) {
         spoilers.forEach((spoiler) => {
           if (!spoiler) return;
 
-          if (currentUser) {
-            // For logged-in users
-            spoiler.style.cursor = "pointer";
-            spoiler.addEventListener("click", function handler(e) {
-              if (e.target.closest(".spoiler-auth-prompt")) return;
-              
-              e.preventDefault();
-              e.stopPropagation();
-              revealSpoiler(this);
-              this.removeEventListener("click", handler);
-            });
-          } else {
-            // For non-logged-in users
+          // Prevent any click events on spoilers for non-logged-in users
+          if (!currentUser) {
+            spoiler.style.pointerEvents = "none";
             const prompt = spoiler.querySelector(".spoiler-auth-prompt");
             if (prompt) {
-              prompt.style.display = "block";
+              prompt.style.pointerEvents = "auto";
             }
-            
-            spoiler.addEventListener("click", function(e) {
-              if (!e.target.closest("a")) {
-                e.preventDefault();
-                e.stopPropagation();
-              }
-            });
+            return;
           }
+
+          // For logged-in users
+          spoiler.style.cursor = "pointer";
+          spoiler.addEventListener("click", function handler(e) {
+            if (e.target.closest(".spoiler-auth-prompt")) return;
+            
+            e.preventDefault();
+            e.stopPropagation();
+            revealSpoiler(this);
+            this.removeEventListener("click", handler);
+          });
         });
       } catch (error) {
         console.error("Error processing spoiler element:", error);
