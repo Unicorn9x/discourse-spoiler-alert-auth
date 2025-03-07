@@ -26,8 +26,12 @@ function initializeSpoilerAuth(api) {
           if (!spoiler) return;
 
           if (!currentUser) {
-            // For non-logged-in users, just add tooltip
-            spoiler.style.cursor = "default";
+            // For non-logged-in users, prevent content revelation
+            spoiler.style.pointerEvents = "none";
+            const placeholder = spoiler.querySelector(".spoiler-content-placeholder");
+            if (placeholder) {
+              placeholder.style.pointerEvents = "auto";
+            }
             return;
           }
 

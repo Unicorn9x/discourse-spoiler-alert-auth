@@ -15,8 +15,13 @@
   }
 
   .spoiler-content-placeholder {
-    transition: opacity 0.3s ease-in-out;
-    opacity: 1;
+    position: relative;
+    min-height: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-medium);
+    font-style: italic;
   }
 
   .spoiler-auth-prompt {
@@ -74,10 +79,8 @@ span.spoiler-auth {
   min-height: 1.5em;
   vertical-align: middle;
   
-  .spoiler-auth-prompt {
-    min-width: 120px;
-    white-space: nowrap;
-    max-width: none;
+  .spoiler-content-placeholder {
+    min-height: 1.5em;
   }
 }
 
@@ -100,6 +103,7 @@ span.spoiler-auth {
 // Ensure tooltip is visible
 [data-tooltip] {
   position: relative;
+  cursor: help;
   
   &:hover::before {
     content: attr(data-tooltip);
