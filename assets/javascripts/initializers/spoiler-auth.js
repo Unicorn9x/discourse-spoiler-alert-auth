@@ -14,6 +14,10 @@ function initializeSpoilerAuth(api) {
     spoiler.innerHTML = originalContent;
   }
 
+  function showLoginModal() {
+    api.showLogin();
+  }
+
   api.decorateCookedElement(
     (element) => {
       if (!element || !element.querySelectorAll) return;
@@ -25,21 +29,20 @@ function initializeSpoilerAuth(api) {
         spoilers.forEach((spoiler) => {
           if (!spoiler) return;
 
-          // Prevent any click events on spoilers for non-logged-in users
           if (!currentUser) {
-            spoiler.style.pointerEvents = "none";
-            const prompt = spoiler.querySelector(".spoiler-auth-prompt");
-            if (prompt) {
-              prompt.style.pointerEvents = "auto";
-            }
+            // For non-logged-in users, add click handler to show login modal
+            spoiler.style.cursor = "pointer";
+            spoiler.addEventListener("click", function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              showLoginModal();
+            });
             return;
           }
 
           // For logged-in users
           spoiler.style.cursor = "pointer";
           spoiler.addEventListener("click", function handler(e) {
-            if (e.target.closest(".spoiler-auth-prompt")) return;
-            
             e.preventDefault();
             e.stopPropagation();
             revealSpoiler(this);

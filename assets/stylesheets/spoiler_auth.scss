@@ -79,4 +79,19 @@ span.spoiler-auth {
     white-space: nowrap;
     max-width: none;
   }
+}
+
+// Tooltip styling
+.spoiler-auth-tooltip {
+  background: var(--primary);
+  color: var(--secondary);
+  padding: 0.5em 1em;
+  border-radius: 4px;
+  font-size: 0.9em;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  &::after {
+    border-top-color: var(--primary);
+  }
 } 
