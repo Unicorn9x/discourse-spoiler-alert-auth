@@ -100,7 +100,6 @@ span.spoiler-auth {
 // Ensure tooltip is visible
 [data-tooltip] {
   position: relative;
-  cursor: pointer;
   
   &:hover::before {
     content: attr(data-tooltip);

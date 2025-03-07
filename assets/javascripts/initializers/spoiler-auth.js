@@ -14,10 +14,6 @@ function initializeSpoilerAuth(api) {
     spoiler.innerHTML = originalContent;
   }
 
-  function showLoginModal() {
-    api.showLogin();
-  }
-
   api.decorateCookedElement(
     (element) => {
       if (!element || !element.querySelectorAll) return;
@@ -30,27 +26,8 @@ function initializeSpoilerAuth(api) {
           if (!spoiler) return;
 
           if (!currentUser) {
-            // For non-logged-in users, add click handler to show login modal
-            spoiler.style.cursor = "pointer";
-            
-            // Add tooltip
-            api.decorateWidget("post-contents:after", (helper) => {
-              return helper.h("div.spoiler-auth-tooltip", {
-                attributes: {
-                  "data-tooltip": I18n.t("login_required"),
-                  "data-tooltip-class": "spoiler-auth-tooltip",
-                  "data-tooltip-position": "top",
-                  "data-tooltip-delay": "100"
-                }
-              });
-            });
-
-            // Add click handler
-            spoiler.addEventListener("click", function(e) {
-              e.preventDefault();
-              e.stopPropagation();
-              showLoginModal();
-            });
+            // For non-logged-in users, just add tooltip
+            spoiler.style.cursor = "default";
             return;
           }
 
