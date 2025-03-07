@@ -1,6 +1,6 @@
 # name: spoiler-alert-auth
 # about: Extends Discourse Spoiler-Alert to only allow logged-in users to reveal spoilers
-# version: 1.7.0
+# version: 1.8.0
 # authors: Unicorn9x
 
 enabled_site_setting :spoiler_auth_enabled
@@ -13,35 +13,33 @@ after_initialize do
     begin
       return if doc.nil? || post.nil?
       
-      # Only process if the user is not logged in
-      if !post.user
-        doc.css(".spoiler").each do |el|
-          next if el.nil? || el.inner_html.blank?
+      # Process spoilers
+      doc.css(".spoiler").each do |el|
+        next if el.nil? || el.inner_html.blank?
+        
+        begin
+          # Store original content
+          original_content = el.inner_html
           
-          begin
-            # Store original content
-            original_content = el.inner_html
-            el.inner_html = ""
-            
-            # Create login prompt
-            prompt = doc.create_element("div")
-            prompt["class"] = "spoiler-auth-prompt"
-            
-            link = doc.create_element("a")
-            link["href"] = "/login"
-            link["class"] = "btn btn-primary"
-            link.content = I18n.t("spoiler_auth.login_to_reveal")
-            
-            prompt.add_child(link)
-            el.add_child(prompt)
-            
-            # Add necessary classes
-            el["class"] = "spoiler spoiler-auth spoiler-blurred"
-            el["data-original-content"] = original_content
-          rescue => e
-            Rails.logger.error("Spoiler Auth Plugin Error (post_process_cooked element): #{e.message}")
-            next
-          end
+          # Add necessary classes
+          el["class"] = "spoiler spoiler-auth spoiler-blurred"
+          el["data-original-content"] = original_content
+          
+          # Create login prompt
+          prompt = doc.create_element("div")
+          prompt["class"] = "spoiler-auth-prompt"
+          
+          link = doc.create_element("a")
+          link["href"] = "/login"
+          link["class"] = "btn btn-primary"
+          link.content = I18n.t("spoiler_auth.login_to_reveal")
+          
+          prompt.add_child(link)
+          el.inner_html = ""
+          el.add_child(prompt)
+        rescue => e
+          Rails.logger.error("Spoiler Auth Plugin Error (post_process_cooked element): #{e.message}")
+          next
         end
       end
     rescue => e
