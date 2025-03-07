@@ -3,20 +3,30 @@
   transition: filter 0.3s ease-in-out;
   display: block;
   min-height: 2em;
+  margin: 0.5em 0;
   
   &.spoiler-blurred {
     filter: blur(0.5em);
-    cursor: pointer;
     user-select: none;
-    pointer-events: none;
+    
+    .spoiler-content-placeholder {
+      opacity: 0;
+      pointer-events: none;
+    }
     
     .spoiler-auth-prompt {
+      opacity: 1;
       pointer-events: auto;
     }
     
     &:hover {
       filter: blur(0.3em);
     }
+  }
+
+  .spoiler-content-placeholder {
+    transition: opacity 0.3s ease-in-out;
+    opacity: 1;
   }
 
   .spoiler-auth-prompt {
@@ -26,23 +36,28 @@
     transform: translate(-50%, -50%);
     text-align: center;
     padding: 1em;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    z-index: 1;
-    pointer-events: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 2;
+    transition: opacity 0.3s ease-in-out;
+    opacity: 0;
     
     .btn {
       margin: 0;
       display: inline-block;
+      font-weight: bold;
+      
+      &:hover {
+        background: var(--tertiary);
+        color: var(--secondary);
+      }
     }
   }
 
   &:not(.spoiler-blurred) {
     filter: none;
-    cursor: auto;
     user-select: text;
-    pointer-events: auto;
     
     .spoiler-auth-prompt {
       display: none;
@@ -66,11 +81,10 @@
 span.spoiler-auth {
   display: inline-block;
   min-height: 1.5em;
+  vertical-align: middle;
   
   .spoiler-auth-prompt {
-    position: relative;
-    top: 0;
-    left: 0;
-    transform: none;
+    min-width: 120px;
+    white-space: nowrap;
   }
 } 

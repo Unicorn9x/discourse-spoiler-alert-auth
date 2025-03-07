@@ -1,6 +1,6 @@
 # name: spoiler-alert-auth
 # about: Extends Discourse Spoiler-Alert to only allow logged-in users to reveal spoilers
-# version: 1.8.6
+# version: 1.8.7
 # authors: Unicorn9x
 
 enabled_site_setting :spoiler_auth_enabled
@@ -15,37 +15,31 @@ after_initialize do
     end
   end
 
-  # Add our custom classes to allowed classes
   on(:before_post_process_cooked) do |doc, state|
     return if !SiteSetting.spoiler_auth_enabled
 
     doc.css(".spoiler").each do |el|
-      # Store original content
-      original_content = el.inner_html
+      # Store original content and add classes
+      original_content = el.inner_html.strip
       el["data-spoiler-content"] = original_content
-
-      # Add classes
       el["class"] = "#{el["class"]} spoiler-auth spoiler-blurred".strip
 
-      # Replace content with login prompt for non-logged-in users
+      # For non-logged-in users, create login prompt
       unless state&.user
-        prompt_div = doc.create_element("div")
-        prompt_div["class"] = "spoiler-auth-prompt"
+        prompt_html = <<~HTML
+          <div class="spoiler-auth-prompt">
+            <a href="/login" class="btn btn-primary">#{I18n.t("login_required")}</a>
+          </div>
+          <div class="spoiler-content-placeholder">#{original_content}</div>
+        HTML
         
-        link = doc.create_element("a")
-        link["href"] = "/login"
-        link["class"] = "btn btn-primary"
-        link.content = I18n.t("spoiler_auth.login_to_reveal")
-        
-        prompt_div.add_child(link)
-        el.inner_html = ""
-        el.add_child(prompt_div)
+        el.inner_html = prompt_html
       end
     end
   end
 
   # Process spoilers in posts
-  on(:post_process_cooked) do |doc, post|
+  on(:post_process_cooked) do |doc|
     return if !SiteSetting.spoiler_auth_enabled
 
     doc.css(".spoiler").each do |el|
@@ -55,8 +49,10 @@ after_initialize do
   end
 
   # Handle topic excerpts
-  on(:reduce_excerpt) do |doc, post|
-    doc.css(".spoiler").remove if doc && post
+  on(:reduce_excerpt) do |doc|
+    doc.css(".spoiler").each do |el|
+      el.inner_html = I18n.t("spoiler_hidden")
+    end if doc
   end
 
   # Add site setting
