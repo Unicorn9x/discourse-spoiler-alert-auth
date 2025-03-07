@@ -1,6 +1,6 @@
 # name: spoiler-alert-auth
 # about: Extends Discourse Spoiler-Alert to only allow logged-in users to reveal spoilers
-# version: 1.8.0
+# version: 1.8.1
 # authors: Unicorn9x
 
 enabled_site_setting :spoiler_auth_enabled
@@ -8,52 +8,29 @@ enabled_site_setting :spoiler_auth_enabled
 register_asset "stylesheets/spoiler_auth.scss"
 
 after_initialize do
+  module ::DiscourseSpoilerAuth
+    class Engine < ::Rails::Engine
+      engine_name "discourse_spoiler_auth"
+      isolate_namespace DiscourseSpoilerAuth
+    end
+  end
+
+  # Add our custom class to allowed classes
+  Post::WhiteListedClasses.push("spoiler-auth")
+  Post::WhiteListedClasses.push("spoiler-blurred")
+
   # Process spoilers in posts
   on(:post_process_cooked) do |doc, post|
-    begin
-      return if doc.nil? || post.nil?
-      
-      # Process spoilers
-      doc.css(".spoiler").each do |el|
-        next if el.nil? || el.inner_html.blank?
-        
-        begin
-          # Store original content
-          original_content = el.inner_html
-          
-          # Add necessary classes
-          el["class"] = "spoiler spoiler-auth spoiler-blurred"
-          el["data-original-content"] = original_content
-          
-          # Create login prompt
-          prompt = doc.create_element("div")
-          prompt["class"] = "spoiler-auth-prompt"
-          
-          link = doc.create_element("a")
-          link["href"] = "/login"
-          link["class"] = "btn btn-primary"
-          link.content = I18n.t("spoiler_auth.login_to_reveal")
-          
-          prompt.add_child(link)
-          el.inner_html = ""
-          el.add_child(prompt)
-        rescue => e
-          Rails.logger.error("Spoiler Auth Plugin Error (post_process_cooked element): #{e.message}")
-          next
-        end
-      end
-    rescue => e
-      Rails.logger.error("Spoiler Auth Plugin Error (post_process_cooked): #{e.message}\n#{e.backtrace.join("\n")}")
+    return if !SiteSetting.spoiler_auth_enabled
+
+    doc.css(".spoiler").each do |el|
+      el.add_class("spoiler-auth")
+      el.add_class("spoiler-blurred")
     end
   end
 
   # Handle topic excerpts
   on(:reduce_excerpt) do |doc, post|
-    begin
-      return if doc.nil? || post.nil?
-      doc.css(".spoiler").remove
-    rescue => e
-      Rails.logger.error("Spoiler Auth Plugin Error (reduce_excerpt): #{e.message}\n#{e.backtrace.join("\n")}")
-    end
+    doc.css(".spoiler").remove if doc && post
   end
 end 

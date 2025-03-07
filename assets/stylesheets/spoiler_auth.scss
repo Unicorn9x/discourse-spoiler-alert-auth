@@ -1,8 +1,5 @@
 .spoiler-auth {
   position: relative;
-  transition: filter 0.3s ease-in-out;
-  display: block;
-  min-height: 2em;
   
   &.spoiler-blurred {
     filter: blur(0.5em);
@@ -15,32 +12,28 @@
   }
 
   .spoiler-auth-prompt {
-    text-align: center;
-    padding: 1em;
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 4px;
-    margin: 0;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 100%;
+    text-align: center;
+    padding: 1em;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    pointer-events: auto;
     
     .btn {
       margin: 0;
       display: inline-block;
     }
   }
+}
 
-  &:not(.spoiler-blurred) {
-    filter: none;
-    cursor: auto;
-    user-select: text;
-    
-    .spoiler-auth-prompt {
-      display: none;
-    }
-  }
+// Handle topic excerpts
+.topic-excerpt .spoiler-auth {
+  display: none;
 }
 
 // Ensure spoilers are properly hidden in topic excerpts
