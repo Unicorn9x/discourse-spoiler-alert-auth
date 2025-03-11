@@ -1,6 +1,6 @@
 # name: spoiler-alert-auth
 # about: Extends Discourse Spoiler-Alert to only allow logged-in users to reveal spoilers
-# version: 1.9.4
+# version: 1.9.5
 # authors: Unicorn9x
 
 enabled_site_setting :spoiler_auth_enabled
@@ -19,13 +19,29 @@ after_initialize do
     return if !SiteSetting.spoiler_auth_enabled
 
     doc.css(".spoiler").each do |el|
+      # Store original content and add classes
+      original_content = el.inner_html.strip
+      el["data-spoiler-content"] = original_content
+      el["class"] = "#{el["class"]} spoiler-auth spoiler-blurred".strip
+
+      # For non-logged-in users, add tooltip
+      unless state&.user
+        el["data-requires-auth"] = "true"
+        el["data-tooltip"] = I18n.t("login_required")
+        el["data-tooltip-class"] = "spoiler-auth-tooltip"
+        el["data-tooltip-position"] = "top"
+        el["data-tooltip-delay"] = "100"
+      end
+    end
+  end
+
+  # Process spoilers in posts
+  on(:post_process_cooked) do |doc|
+    return if !SiteSetting.spoiler_auth_enabled
+
+    doc.css(".spoiler").each do |el|
       el.add_class("spoiler-auth")
       el.add_class("spoiler-blurred")
-      
-      unless state&.user
-        el.add_class("spoiler-auth-locked")
-        el["title"] = "Login to view"
-      end
     end
   end
 

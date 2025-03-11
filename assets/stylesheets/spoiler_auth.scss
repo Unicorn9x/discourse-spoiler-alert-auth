@@ -14,15 +14,6 @@
     }
   }
 
-  &.spoiler-auth-locked {
-    pointer-events: none;
-    cursor: not-allowed;
-    
-    &:hover {
-      filter: blur(0.5em);
-    }
-  }
-
   .spoiler-content-placeholder {
     transition: opacity 0.3s ease-in-out;
     opacity: 1;
@@ -83,13 +74,6 @@ span.spoiler-auth {
   min-height: 1.5em;
   vertical-align: middle;
   
-  &.spoiler-auth-locked {
-    .spoiler-placeholder {
-      padding: 0.5em;
-      white-space: nowrap;
-    }
-  }
-
   .spoiler-auth-prompt {
     min-width: 120px;
     white-space: nowrap;
@@ -116,6 +100,7 @@ span.spoiler-auth {
 // Ensure tooltip is visible
 [data-tooltip] {
   position: relative;
+  cursor: pointer;
   
   &:hover::before {
     content: attr(data-tooltip);
@@ -144,10 +129,4 @@ span.spoiler-auth {
       border-color: var(--primary) transparent transparent transparent;
     }
   }
-}
-
-// Native tooltip styling
-[title] {
-  position: relative;
-  cursor: help;
 } 
