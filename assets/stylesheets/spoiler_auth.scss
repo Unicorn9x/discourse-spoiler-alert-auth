@@ -18,12 +18,8 @@
     pointer-events: none;
     cursor: not-allowed;
     
-    .spoiler-placeholder {
-      display: block;
-      text-align: center;
-      padding: 1em;
-      color: var(--primary-medium);
-      font-style: italic;
+    &:hover {
+      filter: blur(0.5em);
     }
   }
 
