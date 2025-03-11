@@ -1,6 +1,6 @@
 # name: spoiler-alert-auth
 # about: Extends Discourse Spoiler-Alert to only allow logged-in users to reveal spoilers
-# version: 1.9.6
+# version: 1.9.7
 # authors: Unicorn9x
 
 enabled_site_setting :spoiler_auth_enabled
