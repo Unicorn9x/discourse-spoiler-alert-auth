@@ -7,6 +7,8 @@ function initializeSpoilerAuth(api) {
   const currentUser = api.getCurrentUser();
 
   function revealSpoiler(spoiler) {
+    if (!currentUser) return; // Prevent non-logged-in users from revealing
+    
     const originalContent = spoiler.getAttribute("data-spoiler-content");
     if (!originalContent) return;
 
@@ -26,12 +28,8 @@ function initializeSpoilerAuth(api) {
           if (!spoiler) return;
 
           if (!currentUser) {
-            // For non-logged-in users, prevent content revelation
+            // For non-logged-in users, prevent interaction
             spoiler.style.pointerEvents = "none";
-            const placeholder = spoiler.querySelector(".spoiler-content-placeholder");
-            if (placeholder) {
-              placeholder.style.pointerEvents = "auto";
-            }
             return;
           }
 

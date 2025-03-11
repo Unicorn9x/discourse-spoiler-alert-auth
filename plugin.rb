@@ -1,6 +1,6 @@
 # name: spoiler-alert-auth
 # about: Extends Discourse Spoiler-Alert to only allow logged-in users to reveal spoilers
-# version: 1.9.2
+# version: 1.9.3
 # authors: Unicorn9x
 
 enabled_site_setting :spoiler_auth_enabled
@@ -26,17 +26,9 @@ after_initialize do
 
       # For non-logged-in users, replace content with placeholder
       unless state&.user
-        el["data-requires-auth"] = "true"
-        el["data-tooltip"] = I18n.t("login_required")
-        el["data-tooltip-class"] = "spoiler-auth-tooltip"
-        el["data-tooltip-position"] = "top"
-        el["data-tooltip-delay"] = "100"
-        el["data-tooltip-html"] = "true"
-        
-        # Replace content with placeholder for non-logged-in users
-        el.inner_html = <<~HTML
-          <div class="spoiler-content-placeholder">#{I18n.t("spoiler_hidden")}</div>
-        HTML
+        el["title"] = "Login to view"
+        el["class"] = "#{el["class"]} spoiler-auth-locked"
+        el.inner_html = "<span class='spoiler-placeholder'>Spoiler content (login to view)</span>"
       end
     end
   end

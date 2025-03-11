@@ -14,14 +14,22 @@
     }
   }
 
+  &.spoiler-auth-locked {
+    pointer-events: none;
+    cursor: not-allowed;
+    
+    .spoiler-placeholder {
+      display: block;
+      text-align: center;
+      padding: 1em;
+      color: var(--primary-medium);
+      font-style: italic;
+    }
+  }
+
   .spoiler-content-placeholder {
-    position: relative;
-    min-height: 2em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--primary-medium);
-    font-style: italic;
+    transition: opacity 0.3s ease-in-out;
+    opacity: 1;
   }
 
   .spoiler-auth-prompt {
@@ -79,8 +87,17 @@ span.spoiler-auth {
   min-height: 1.5em;
   vertical-align: middle;
   
-  .spoiler-content-placeholder {
-    min-height: 1.5em;
+  &.spoiler-auth-locked {
+    .spoiler-placeholder {
+      padding: 0.5em;
+      white-space: nowrap;
+    }
+  }
+
+  .spoiler-auth-prompt {
+    min-width: 120px;
+    white-space: nowrap;
+    max-width: none;
   }
 }
 
@@ -103,7 +120,6 @@ span.spoiler-auth {
 // Ensure tooltip is visible
 [data-tooltip] {
   position: relative;
-  cursor: help;
   
   &:hover::before {
     content: attr(data-tooltip);
@@ -132,4 +148,10 @@ span.spoiler-auth {
       border-color: var(--primary) transparent transparent transparent;
     }
   }
+}
+
+// Native tooltip styling
+[title] {
+  position: relative;
+  cursor: help;
 } 
