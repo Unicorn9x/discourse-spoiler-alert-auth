@@ -25,7 +25,7 @@ hooks:
         cmd:
           - mkdir -p plugins
           - git clone https://github.com/discourse/docker_manager.git
-          - git clone https://github.com/discourse/discourse-spoiler-alert-auth.git
+          - git clone https://github.com/Unicorn9x/spoiler-alert-auth.git
 ```
 
 - Rebuild the container
