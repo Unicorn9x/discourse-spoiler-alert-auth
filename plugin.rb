@@ -10,6 +10,9 @@
 enabled_site_setting :spoiler_auth_enabled
 
 register_asset "stylesheets/discourse_spoiler_auth_alert.scss"
+register_asset "javascripts/initializers/spoiler-auth-alert.js"
+register_asset "javascripts/lib/apply-spoiler-auth.js"
+register_asset "javascripts/lib/rich-editor-extension.js"
 
 after_initialize do
   on(:reduce_cooked) do |fragment, post|
