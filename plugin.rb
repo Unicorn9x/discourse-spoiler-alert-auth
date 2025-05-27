@@ -4,12 +4,15 @@
 # about: Uses the Spoiler Alert plugin to blur text when spoiling it, requiring users to be logged in to reveal content.
 # meta_topic_id: 12650
 # version: 1.0.0
-# authors: Discourse Team
-# url: https://github.com/discourse/discourse/tree/main/plugins/spoiler-alert-auth
+# authors: Unicorn9x
+# url: https://github.com/Unicorn9x/spoiler-alert-auth
 
 enabled_site_setting :spoiler_auth_enabled
 
 register_asset "stylesheets/discourse_spoiler_auth_alert.scss"
+
+# Add pnpm as a dependency
+gem 'pnpm', '~> 8.0'
 
 after_initialize do
   on(:reduce_cooked) do |fragment, post|
