@@ -11,9 +11,6 @@ enabled_site_setting :spoiler_auth_enabled
 
 register_asset "stylesheets/discourse_spoiler_auth_alert.scss"
 
-# Add pnpm as a dependency
-gem 'pnpm', '~> 8.0'
-
 after_initialize do
   on(:reduce_cooked) do |fragment, post|
     fragment

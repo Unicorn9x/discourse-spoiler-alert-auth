@@ -2,10 +2,9 @@
   "name": "discourse-spoiler-alert-auth",
   "version": "1.0.0",
   "description": "A Discourse plugin that requires users to be logged in to reveal spoiler content",
-  "author": "Discourse Team",
+  "author": "Unicorn9x",
   "license": "MIT",
   "engines": {
     "node": ">=16.0.0"
-  },
-  "packageManager": "pnpm@8.0.0"
+  }
 } 
