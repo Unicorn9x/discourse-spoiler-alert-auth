@@ -1,4 +1,0 @@
-plugins:
-  spoiler_auth_enabled:
-    default: true
-    client: true 
