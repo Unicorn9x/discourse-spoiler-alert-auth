@@ -58,6 +58,15 @@ function createLoginMessage() {
     z-index: 9999;
   `;
   document.body.appendChild(message);
+
+  // Add hover events to keep message visible when hovering over it
+  message.addEventListener('mouseenter', () => {
+    message.style.opacity = '1';
+  });
+  message.addEventListener('mouseleave', () => {
+    message.style.opacity = '0';
+  });
+
   return message;
 }
 
@@ -90,6 +99,9 @@ function _setSpoilerAuthHidden(element) {
   element.addEventListener('mouseenter', () => {
     updateMessagePosition(loginMessage, element);
     loginMessage.style.opacity = '1';
+  });
+  element.addEventListener('mouseleave', () => {
+    loginMessage.style.opacity = '0';
   });
 
   // Set aria-hidden for all children of the spoiler
