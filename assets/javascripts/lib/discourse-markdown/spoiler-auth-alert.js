@@ -1,53 +1,31 @@
-const CONTAINS_BLOCK_REGEX = /\n|<img|!\[[^\]]*\][(\[]/;
-
-function insertSpoilerAuth(_, spoiler) {
-  const element = CONTAINS_BLOCK_REGEX.test(spoiler) ? "div" : "span";
-  return `<${element} class='spoiler-auth'>${spoiler}</${element}>`;
-}
-
-function replaceSpoilerAuths(text) {
-  text ||= "";
-  let previousText;
-
-  do {
-    previousText = text;
-    text = text.replace(
-      /\[spoiler-auth\]((?:(?!\[spoiler-auth\]|\[\/spoiler-auth\])[\S\s])*)\[\/spoiler-auth\]/gi,
-      insertSpoilerAuth
-    );
-  } while (text !== previousText);
-
-  return text;
-}
+import { withPluginApi } from "discourse/lib/plugin-api";
 
 function setupMarkdownIt(helper) {
   if (!helper) return;
 
-  helper.registerOptions((opts, siteSettings) => {
-    opts.features["spoiler-auth-alert"] = !!siteSettings.spoiler_auth_enabled;
+  helper.registerOptions((opts) => {
+    opts.features["spoiler-auth"] = true;
   });
 
   helper.registerPlugin((md) => {
-    md.inline.bbcode.ruler.push("spoiler-auth", {
-      tag: "spoiler-auth",
-      wrap: "span.spoiler-auth",
-    });
+    const spoilerAuthRule = {
+      matcher: /\[spoiler-auth\]([\s\S]*?)\[\/spoiler-auth\]/,
+      onMatch: (buffer, matches, state) => {
+        const content = matches[1];
+        const isInline = !content.includes("\n");
+        const tag = isInline ? "span" : "div";
+        const token = new state.Token("html_inline", "", 0);
+        token.content = `<${tag} class="spoiler-auth spoiler-auth-blurred">${content}</${tag}>`;
+        buffer.push(token);
+        return buffer;
+      },
+    };
 
-    md.block.bbcode.ruler.push("spoiler-auth", {
-      tag: "spoiler-auth",
-      wrap: "div.spoiler-auth",
-    });
+    md.block.bbcode.ruler.push("spoiler-auth", spoilerAuthRule);
+    md.inline.bbcode.ruler.push("spoiler-auth", spoilerAuthRule);
   });
 }
 
-export function setup(helper) {
-  if (!helper) return;
-
-  helper.allowList(["span.spoiler-auth", "div.spoiler-auth"]);
-
-  if (helper.markdownIt) {
-    setupMarkdownIt(helper);
-  } else {
-    helper.addPreProcessor(replaceSpoilerAuths);
-  }
+export function setup(api) {
+  setupMarkdownIt(api.getMarkdownIt());
 } 

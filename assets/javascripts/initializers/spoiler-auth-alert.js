@@ -1,69 +1,47 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
-import {
-  addBlockDecorateCallback,
-  addTagDecorateCallback,
-} from "discourse/lib/to-markdown";
-import applySpoilerAuth from "../lib/apply-spoiler-auth";
-import richEditorExtension from "../lib/rich-editor-extension";
-import { setup as setupMarkdown } from "../lib/discourse-markdown/spoiler-auth-alert";
+import { setup } from "../lib/discourse-markdown/spoiler-auth-alert";
 
-function spoil(element) {
-  element.querySelectorAll(".spoiler-auth").forEach((spoiler) => {
-    spoiler.classList.remove("spoiler-auth");
-    spoiler.classList.add("spoiled-auth");
-    applySpoilerAuth(spoiler);
-  });
-}
+function initializeSpoilerAuth(api) {
+  const siteSettings = api.container.lookup("service:site-settings");
+  if (!siteSettings.spoiler_auth_enabled) return;
 
-export function initializeSpoilerAuth(api) {
-  api.decorateCookedElement(spoil, { id: "spoiler-auth-alert" });
-
-  api.addComposerToolbarPopupMenuOption({
-    icon: "wand-magic",
-    label: "spoiler_auth.title",
-    action: (toolbarEvent) => {
-      toolbarEvent.applySurround("[spoiler-auth]", "[/spoiler-auth]", "spoiler_auth_text", {
-        multiline: false,
-        useBlockMode: true,
+  api.decorateCookedElement((elem) => {
+    elem.querySelectorAll(".spoiler-auth").forEach((el) => {
+      el.classList.add("spoiler-auth-blurred");
+      el.addEventListener("click", (e) => {
+        if (e.target === el) {
+          el.classList.remove("spoiler-auth-blurred");
+        }
       });
+    });
+  }, { id: "spoiler-auth" });
+
+  api.addToolbarPopupMenuOptionsCallback(() => {
+    return {
+      action: "insertSpoilerAuth",
+      icon: "eye-slash",
+      label: "spoiler_auth_alert.insert_spoiler",
+    };
+  });
+
+  api.modifyClass("component:composer-editor", {
+    pluginId: "spoiler-auth",
+    actions: {
+      insertSpoilerAuth() {
+        this.getSelectedText().then((text) => {
+          const selected = text || I18n.t("spoiler_auth_alert.spoiler_text");
+          this.replaceSelection(`[spoiler-auth]${selected}[/spoiler-auth]`);
+        });
+      },
     },
   });
 
-  addTagDecorateCallback(function () {
-    const { attributes } = this.element;
-
-    if (/\bspoiled-auth\b/.test(attributes.class)) {
-      this.prefix = "[spoiler-auth]";
-      this.suffix = "[/spoiler-auth]";
-    }
-  });
-
-  addBlockDecorateCallback(function (text) {
-    const { name, attributes } = this.element;
-
-    if (name === "div" && /\bspoiled-auth\b/.test(attributes.class)) {
-      this.prefix = "[spoiler-auth]\n";
-      this.suffix = "\n[/spoiler-auth]";
-      return text.trim();
-    }
-  });
-  api.registerRichEditorExtension(richEditorExtension);
+  setup(api);
 }
 
 export default {
   name: "spoiler-auth-alert",
-
-  initialize(container) {
-    const siteSettings = container.lookup("service:site-settings");
-
-    if (siteSettings.spoiler_auth_enabled) {
-      withPluginApi("1.15.0", initializeSpoilerAuth);
-      
-      // Setup markdown processing
-      const helper = container.lookup("service:markdown-it");
-      if (helper) {
-        setupMarkdown(helper);
-      }
-    }
+  initialize() {
+    withPluginApi("0.8.31", initializeSpoilerAuth);
   },
 }; 
