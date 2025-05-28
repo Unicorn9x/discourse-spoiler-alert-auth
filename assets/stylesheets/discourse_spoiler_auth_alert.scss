@@ -30,31 +30,8 @@
     z-index: 1;
   }
 
-  &::after {
-    content: "🔒 Login to reveal";
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.9em;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    filter: none;
-    z-index: 2;
-  }
-
-  &:hover {
-    &::before {
-      opacity: 1;
-    }
-    &::after {
-      opacity: 1;
-    }
+  &:hover::before {
+    opacity: 1;
   }
 
   a,

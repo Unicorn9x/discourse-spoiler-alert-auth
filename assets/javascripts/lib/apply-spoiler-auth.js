@@ -39,6 +39,28 @@ function setAttributes(element, attributes) {
   });
 }
 
+function createLoginMessage() {
+  const message = document.createElement('div');
+  message.className = 'spoiler-auth-login-message';
+  message.textContent = '🔒 Login to reveal';
+  message.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 2;
+  `;
+  return message;
+}
+
 function _setSpoilerAuthHidden(element) {
   const spoilerHiddenAttributes = {
     role: "button",
@@ -53,9 +75,23 @@ function _setSpoilerAuthHidden(element) {
   setAttributes(element, spoilerHiddenAttributes);
   element.classList.add("spoiler-auth-blurred");
 
+  // Create and append login message
+  const loginMessage = createLoginMessage();
+  element.appendChild(loginMessage);
+
+  // Add hover event listeners
+  element.addEventListener('mouseenter', () => {
+    loginMessage.style.opacity = '1';
+  });
+  element.addEventListener('mouseleave', () => {
+    loginMessage.style.opacity = '0';
+  });
+
   // Set aria-hidden for all children of the spoiler
   Array.from(element.children).forEach((e) => {
-    e.setAttribute("aria-hidden", true);
+    if (e !== loginMessage) {
+      e.setAttribute("aria-hidden", true);
+    }
   });
 }
 
@@ -70,6 +106,12 @@ function _setSpoilerAuthVisible(element) {
   // Set attributes & classes for when spoiler is visible
   setAttributes(element, spoilerVisibleAttributes);
   element.classList.remove("spoiler-auth-blurred");
+
+  // Remove login message
+  const loginMessage = element.querySelector('.spoiler-auth-login-message');
+  if (loginMessage) {
+    loginMessage.remove();
+  }
 
   // Remove aria-hidden for all children of the spoiler when visible
   Array.from(element.children).forEach((e) => {
