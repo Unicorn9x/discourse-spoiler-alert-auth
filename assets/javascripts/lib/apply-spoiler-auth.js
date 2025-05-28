@@ -82,9 +82,8 @@ function toggleSpoilerAuth(event, element) {
     // Check if user is logged in
     const currentUser = window.Discourse.__container__.lookup("service:current-user");
     if (!currentUser) {
-      // If not logged in, show login modal
-      const modal = window.Discourse.__container__.lookup("service:modal");
-      modal.show("login");
+      // If not logged in, just prevent revealing
+      event.preventDefault();
       return;
     }
     _setSpoilerAuthVisible(element);
