@@ -10,6 +10,10 @@
   "devDependencies": {
     "@embroider/compat": "^3.0.0",
     "@embroider/core": "^3.0.0",
-    "@embroider/webpack": "^3.0.0"
+    "@embroider/webpack": "^3.0.0",
+    "discourse": "^3.0.0"
+  },
+  "dependencies": {
+    "discourse-i18n": "^1.0.0"
   }
 } 
