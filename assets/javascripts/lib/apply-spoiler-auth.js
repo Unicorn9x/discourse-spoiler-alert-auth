@@ -78,36 +78,44 @@ function updateMessagePosition(message, element) {
 }
 
 function _setSpoilerAuthHidden(element) {
-  const spoilerHiddenAttributes = {
-    role: "button",
-    tabindex: "0",
-    "data-spoiler-auth-state": "blurred",
-    "aria-expanded": false,
-    "aria-label": i18n("spoiler_auth_alert.label.show"),
-    "aria-live": "polite",
-  };
+  const currentUser = window.Discourse.__container__.lookup("service:current-user");
+  
+  if (!currentUser) {
+    // For non-logged-in users: blur and show login message
+    const spoilerHiddenAttributes = {
+      role: "button",
+      tabindex: "0",
+      "data-spoiler-auth-state": "blurred",
+      "aria-expanded": false,
+      "aria-label": i18n("spoiler_auth_alert.label.show"),
+      "aria-live": "polite",
+    };
 
-  // Set default attributes & classes on spoiler
-  setAttributes(element, spoilerHiddenAttributes);
-  element.classList.add("spoiler-auth-blurred");
+    // Set default attributes & classes on spoiler
+    setAttributes(element, spoilerHiddenAttributes);
+    element.classList.add("spoiler-auth-blurred");
 
-  // Create login message
-  const loginMessage = createLoginMessage();
-  element.dataset.loginMessageId = loginMessage.className;
+    // Create login message
+    const loginMessage = createLoginMessage();
+    element.dataset.loginMessageId = loginMessage.className;
 
-  // Add hover event listeners
-  element.addEventListener('mouseenter', () => {
-    updateMessagePosition(loginMessage, element);
-    loginMessage.style.opacity = '1';
-  });
-  element.addEventListener('mouseleave', () => {
-    loginMessage.style.opacity = '0';
-  });
+    // Add hover event listeners
+    element.addEventListener('mouseenter', () => {
+      updateMessagePosition(loginMessage, element);
+      loginMessage.style.opacity = '1';
+    });
+    element.addEventListener('mouseleave', () => {
+      loginMessage.style.opacity = '0';
+    });
 
-  // Set aria-hidden for all children of the spoiler
-  Array.from(element.children).forEach((e) => {
-    e.setAttribute("aria-hidden", true);
-  });
+    // Set aria-hidden for all children of the spoiler
+    Array.from(element.children).forEach((e) => {
+      e.setAttribute("aria-hidden", true);
+    });
+  } else {
+    // For logged-in users: show content immediately
+    _setSpoilerAuthVisible(element);
+  }
 }
 
 function _setSpoilerAuthVisible(element) {
