@@ -40,9 +40,10 @@ function setAttributes(element, attributes) {
 }
 
 function createLoginMessage() {
-  const message = document.createElement('div');
+  const message = document.createElement('a');
   message.className = 'spoiler-auth-login-message';
   message.textContent = '🔒 Login to reveal';
+  message.href = '/login';
   message.style.cssText = `
     position: fixed;
     background: rgba(0, 0, 0, 0.7);
@@ -50,7 +51,8 @@ function createLoginMessage() {
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 0.9em;
-    pointer-events: none;
+    text-decoration: none;
+    cursor: pointer;
     opacity: 0;
     transition: opacity 0.2s ease;
     z-index: 9999;
@@ -80,18 +82,24 @@ function _setSpoilerAuthHidden(element) {
   setAttributes(element, spoilerHiddenAttributes);
   element.classList.add("spoiler-auth-blurred");
 
-  // Create login message
-  const loginMessage = createLoginMessage();
-  element.dataset.loginMessageId = loginMessage.className;
+  // Check if user is logged in
+  const currentUser = window.Discourse.__container__.lookup("service:current-user");
+  
+  // Only create login message for non-logged-in users
+  if (!currentUser) {
+    // Create login message
+    const loginMessage = createLoginMessage();
+    element.dataset.loginMessageId = loginMessage.className;
 
-  // Add hover event listeners
-  element.addEventListener('mouseenter', () => {
-    updateMessagePosition(loginMessage, element);
-    loginMessage.style.opacity = '1';
-  });
-  element.addEventListener('mouseleave', () => {
-    loginMessage.style.opacity = '0';
-  });
+    // Add hover event listeners
+    element.addEventListener('mouseenter', () => {
+      updateMessagePosition(loginMessage, element);
+      loginMessage.style.opacity = '1';
+    });
+    element.addEventListener('mouseleave', () => {
+      loginMessage.style.opacity = '0';
+    });
+  }
 
   // Set aria-hidden for all children of the spoiler
   Array.from(element.children).forEach((e) => {
@@ -111,12 +119,14 @@ function _setSpoilerAuthVisible(element) {
   setAttributes(element, spoilerVisibleAttributes);
   element.classList.remove("spoiler-auth-blurred");
 
-  // Remove login message
-  const loginMessage = document.querySelector(`.${element.dataset.loginMessageId}`);
-  if (loginMessage) {
-    loginMessage.remove();
+  // Remove login message if it exists
+  if (element.dataset.loginMessageId) {
+    const loginMessage = document.querySelector(`.${element.dataset.loginMessageId}`);
+    if (loginMessage) {
+      loginMessage.remove();
+    }
+    delete element.dataset.loginMessageId;
   }
-  delete element.dataset.loginMessageId;
 
   // Remove aria-hidden for all children of the spoiler when visible
   Array.from(element.children).forEach((e) => {
