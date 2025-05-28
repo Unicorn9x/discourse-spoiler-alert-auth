@@ -8,6 +8,8 @@ module.exports = function (defaults) {
     staticAddonTestSupportTrees: true,
     staticHelpers: true,
     staticComponents: true,
+    staticModifiers: true,
+    staticEmberSource: true,
     skipBabel: [
       {
         package: "qunit",
