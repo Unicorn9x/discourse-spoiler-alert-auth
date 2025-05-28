@@ -3,7 +3,7 @@
 # name: spoiler-alert-auth
 # about: Uses the Spoiler Alert plugin to blur text when spoiling it, requiring users to be logged in to reveal content.
 # meta_topic_id: 12650
-# version: 1.1.2
+# version: 1.1.3
 # authors: Unicorn9x
 # url: https://github.com/Unicorn9x/spoiler-alert-auth
 # settings: spoiler_auth_enabled

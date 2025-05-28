@@ -5,6 +5,11 @@ function initializeSpoilerAuth(api) {
   const siteSettings = api.container.lookup("service:site-settings");
   if (!siteSettings.spoiler_auth_enabled) return;
 
+  const helper = api.container.lookup("service:markdown-it");
+  if (helper) {
+    setup(api);
+  }
+
   api.decorateCookedElement((elem) => {
     elem.querySelectorAll(".spoiler-auth").forEach((el) => {
       el.classList.add("spoiler-auth-blurred");
@@ -35,8 +40,6 @@ function initializeSpoilerAuth(api) {
       },
     },
   });
-
-  setup(api);
 }
 
 export default {

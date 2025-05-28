@@ -27,5 +27,6 @@ function setupMarkdownIt(helper) {
 }
 
 export function setup(api) {
-  setupMarkdownIt(api.getMarkdownIt());
+  const helper = api.container.lookup("service:markdown-it");
+  setupMarkdownIt(helper);
 } 
