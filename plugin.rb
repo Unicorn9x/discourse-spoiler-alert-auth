@@ -7,7 +7,7 @@
 # authors: Unicorn9x
 # url: https://github.com/Unicorn9x/spoiler-alert-auth
 
-enabled_site_setting :spoiler_auth_enabled
+register_site_setting :spoiler_auth_enabled, :boolean, default: true, client: true
 
 after_initialize do
   on(:reduce_cooked) do |fragment, post|
