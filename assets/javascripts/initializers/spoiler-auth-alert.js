@@ -3,7 +3,7 @@ import {
   addBlockDecorateCallback,
   addTagDecorateCallback,
 } from "discourse/lib/to-markdown";
-import applySpoilerAuth from "discourse/plugins/spoiler-alert-auth/lib/apply-spoiler-auth";
+import applySpoilerAuth from "../lib/apply-spoiler-auth";
 import richEditorExtension from "../lib/rich-editor-extension";
 
 function spoil(element) {
