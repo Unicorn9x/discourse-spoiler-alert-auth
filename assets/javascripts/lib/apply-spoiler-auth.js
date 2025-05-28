@@ -45,9 +45,6 @@ function createLoginMessage() {
   message.textContent = '🔒 Login to reveal';
   message.style.cssText = `
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     background: rgba(0, 0, 0, 0.7);
     color: white;
     padding: 4px 8px;
@@ -56,9 +53,17 @@ function createLoginMessage() {
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.2s ease;
-    z-index: 2;
+    z-index: 9999;
   `;
+  document.body.appendChild(message);
   return message;
+}
+
+function updateMessagePosition(message, element) {
+  const rect = element.getBoundingClientRect();
+  message.style.top = `${rect.top + rect.height / 2}px`;
+  message.style.left = `${rect.left + rect.width / 2}px`;
+  message.style.transform = 'translate(-50%, -50%)';
 }
 
 function _setSpoilerAuthHidden(element) {
@@ -75,12 +80,13 @@ function _setSpoilerAuthHidden(element) {
   setAttributes(element, spoilerHiddenAttributes);
   element.classList.add("spoiler-auth-blurred");
 
-  // Create and append login message
+  // Create login message
   const loginMessage = createLoginMessage();
-  element.appendChild(loginMessage);
+  element.dataset.loginMessageId = loginMessage.className;
 
   // Add hover event listeners
   element.addEventListener('mouseenter', () => {
+    updateMessagePosition(loginMessage, element);
     loginMessage.style.opacity = '1';
   });
   element.addEventListener('mouseleave', () => {
@@ -89,9 +95,7 @@ function _setSpoilerAuthHidden(element) {
 
   // Set aria-hidden for all children of the spoiler
   Array.from(element.children).forEach((e) => {
-    if (e !== loginMessage) {
-      e.setAttribute("aria-hidden", true);
-    }
+    e.setAttribute("aria-hidden", true);
   });
 }
 
@@ -108,10 +112,11 @@ function _setSpoilerAuthVisible(element) {
   element.classList.remove("spoiler-auth-blurred");
 
   // Remove login message
-  const loginMessage = element.querySelector('.spoiler-auth-login-message');
+  const loginMessage = document.querySelector(`.${element.dataset.loginMessageId}`);
   if (loginMessage) {
     loginMessage.remove();
   }
+  delete element.dataset.loginMessageId;
 
   // Remove aria-hidden for all children of the spoiler when visible
   Array.from(element.children).forEach((e) => {
