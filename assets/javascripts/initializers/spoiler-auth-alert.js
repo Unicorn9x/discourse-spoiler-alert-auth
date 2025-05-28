@@ -21,12 +21,10 @@ function initializeSpoilerAuth(api) {
     });
   }, { id: "spoiler-auth" });
 
-  api.addToolbarPopupMenuOptionsCallback(() => {
-    return {
-      action: "insertSpoilerAuth",
-      icon: "eye-slash",
-      label: "spoiler_auth_alert.insert_spoiler",
-    };
+  api.addComposerToolbarPopupMenuOption({
+    action: "insertSpoilerAuth",
+    icon: "eye-slash",
+    label: "spoiler_auth_alert.insert_spoiler",
   });
 
   api.modifyClass("component:composer-editor", {
