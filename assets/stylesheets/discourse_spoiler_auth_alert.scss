@@ -31,10 +31,16 @@
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.2s ease;
+    filter: none;
+    z-index: 1;
   }
 
-  &:hover::after {
-    opacity: 1;
+  &:hover {
+    filter: blur(0.5em);
+
+    &::after {
+      opacity: 1;
+    }
   }
 
   a,
