@@ -5,6 +5,7 @@ import {
 } from "discourse/lib/to-markdown";
 import applySpoilerAuth from "../lib/apply-spoiler-auth";
 import richEditorExtension from "../lib/rich-editor-extension";
+import { setup as setupMarkdown } from "../lib/discourse-markdown/spoiler-auth-alert";
 
 function spoil(element) {
   element.querySelectorAll(".spoiler-auth").forEach((spoiler) => {
@@ -57,6 +58,7 @@ export default {
 
     if (siteSettings.spoiler_auth_enabled) {
       withPluginApi("1.15.0", initializeSpoilerAuth);
+      setupMarkdown(container.lookup("service:markdown-it"));
     }
   },
 }; 
