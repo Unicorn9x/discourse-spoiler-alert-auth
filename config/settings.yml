@@ -1,0 +1,5 @@
+plugins:
+  spoiler_auth_enabled:
+    default: true
+    client: true
+    description: "Enable the auth spoiler plugin. If you change this, you must rebake all posts with: rake posts:rebake" 

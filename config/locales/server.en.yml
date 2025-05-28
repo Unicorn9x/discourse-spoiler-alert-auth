@@ -1,0 +1,5 @@
+en:
+  site_settings:
+    spoiler_auth_enabled: "Enable the auth spoiler plugin. If you change this, you must rebake all posts with: rake posts:rebake"
+  spoiler_auth_alert:
+    excerpt_spoiler: "spoiler (login required)" 

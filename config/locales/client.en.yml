@@ -1,9 +1,15 @@
 en:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          spoiler_auth_alert: "Discourse Auth Spoiler Alert"
   js:
-    spoiler_auth_alert:
-      label:
-        show: "Log in to reveal spoiler"
-      excerpt_spoiler: "Spoiler (login required)"
     spoiler_auth:
       title: "Auth Spoiler"
-      text: "Hidden content (login required)" 
+      label:
+        show: "Log in to reveal spoiler"
+    composer:
+      spoiler_auth_text: "This text will be blurred (login required)"
+    spoiler_auth_alert:
+      excerpt_spoiler: "Spoiler (login required)" 
