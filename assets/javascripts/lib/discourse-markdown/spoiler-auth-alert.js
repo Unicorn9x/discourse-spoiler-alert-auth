@@ -21,6 +21,8 @@ function replaceSpoilerAuths(text) {
 }
 
 function setupMarkdownIt(helper) {
+  if (!helper) return;
+
   helper.registerOptions((opts, siteSettings) => {
     opts.features["spoiler-auth-alert"] = !!siteSettings.spoiler_auth_enabled;
   });
@@ -39,6 +41,8 @@ function setupMarkdownIt(helper) {
 }
 
 export function setup(helper) {
+  if (!helper) return;
+
   helper.allowList(["span.spoiler-auth", "div.spoiler-auth"]);
 
   if (helper.markdownIt) {

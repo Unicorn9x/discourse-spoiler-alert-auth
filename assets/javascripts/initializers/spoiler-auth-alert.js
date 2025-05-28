@@ -58,7 +58,12 @@ export default {
 
     if (siteSettings.spoiler_auth_enabled) {
       withPluginApi("1.15.0", initializeSpoilerAuth);
-      setupMarkdown(container.lookup("service:markdown-it"));
+      
+      // Setup markdown processing
+      const helper = container.lookup("service:markdown-it");
+      if (helper) {
+        setupMarkdown(helper);
+      }
     }
   },
 }; 
