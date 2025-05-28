@@ -1,32 +1,53 @@
-import { withPluginApi } from "discourse/lib/plugin-api";
+const CONTAINS_BLOCK_REGEX = /\n|<img|!\[[^\]]*\][(\[]/;
+
+function insertSpoilerAuth(_, spoiler) {
+  const element = CONTAINS_BLOCK_REGEX.test(spoiler) ? "div" : "span";
+  return `<${element} class='spoiler-auth'>${spoiler}</${element}>`;
+}
+
+function replaceSpoilerAuths(text) {
+  text ||= "";
+  let previousText;
+
+  do {
+    previousText = text;
+    text = text.replace(
+      /\[spoiler-auth\]((?:(?!\[spoiler-auth\]|\[\/spoiler-auth\])[\S\s])*)\[\/spoiler-auth\]/gi,
+      insertSpoilerAuth
+    );
+  } while (text !== previousText);
+
+  return text;
+}
 
 function setupMarkdownIt(helper) {
   if (!helper) return;
 
-  helper.registerOptions((opts) => {
-    opts.features["spoiler-auth"] = true;
+  helper.registerOptions((opts, siteSettings) => {
+    opts.features["spoiler-auth-alert"] = !!siteSettings.spoiler_auth_enabled;
   });
 
   helper.registerPlugin((md) => {
-    const spoilerAuthRule = {
-      matcher: /\[spoiler-auth\]([\s\S]*?)\[\/spoiler-auth\]/,
-      onMatch: (buffer, matches, state) => {
-        const content = matches[1];
-        const isInline = !content.includes("\n");
-        const tag = isInline ? "span" : "div";
-        const token = new state.Token("html_inline", "", 0);
-        token.content = `<${tag} class="spoiler-auth spoiler-auth-blurred">${content}</${tag}>`;
-        buffer.push(token);
-        return buffer;
-      },
-    };
+    md.inline.bbcode.ruler.push("spoiler-auth", {
+      tag: "spoiler-auth",
+      wrap: "span.spoiler-auth",
+    });
 
-    md.block.bbcode.ruler.push("spoiler-auth", spoilerAuthRule);
-    md.inline.bbcode.ruler.push("spoiler-auth", spoilerAuthRule);
+    md.block.bbcode.ruler.push("spoiler-auth", {
+      tag: "spoiler-auth",
+      wrap: "div.spoiler-auth",
+    });
   });
 }
 
-export function setup(api) {
-  const helper = api.container.lookup("service:markdown-it");
-  setupMarkdownIt(helper);
+export function setup(helper) {
+  if (!helper) return;
+
+  helper.allowList(["span.spoiler-auth", "div.spoiler-auth"]);
+
+  if (helper.markdownIt) {
+    setupMarkdownIt(helper);
+  } else {
+    helper.addPreProcessor(replaceSpoilerAuths);
+  }
 } 
