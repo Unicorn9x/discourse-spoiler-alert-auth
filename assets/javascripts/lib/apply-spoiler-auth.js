@@ -91,9 +91,6 @@ function _setSpoilerAuthHidden(element) {
     updateMessagePosition(loginMessage, element);
     loginMessage.style.opacity = '1';
   });
-  element.addEventListener('mouseleave', () => {
-    loginMessage.style.opacity = '0';
-  });
 
   // Set aria-hidden for all children of the spoiler
   Array.from(element.children).forEach((e) => {
