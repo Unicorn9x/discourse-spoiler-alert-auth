@@ -10,10 +10,6 @@
   "devDependencies": {
     "@embroider/compat": "^3.0.0",
     "@embroider/core": "^3.0.0",
-    "@embroider/webpack": "^3.0.0",
-    "ember-cli": "~4.12.0",
-    "ember-cli-babel": "^7.26.6",
-    "ember-cli-htmlbars": "^6.3.0",
-    "ember-source": "~4.12.0"
+    "@embroider/webpack": "^3.0.0"
   }
 } 

@@ -14,11 +14,8 @@
 .spoiler-auth-blurred {
   @include unselectable;
   cursor: pointer;
+  filter: blur(0.5em);
   position: relative;
-
-  > * {
-    filter: blur(0.5em);
-  }
 
   &::after {
     content: "🔒 Login to reveal";
@@ -34,17 +31,12 @@
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.2s ease;
+    filter: none;
     z-index: 1;
   }
 
-  &:hover {
-    > * {
-      filter: blur(0.5em);
-    }
-
-    &::after {
-      opacity: 1;
-    }
+  &:hover::after {
+    opacity: 1;
   }
 
   a,
@@ -73,10 +65,9 @@
   }
 
   .discourse-no-touch & {
-    &:hover {
-      > * {
-        filter: blur(0.18em);
-      }
+    &:hover,
+    &:focus {
+      filter: blur(0.18em);
 
       img {
         filter: blur(0.5em);

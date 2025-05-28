@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-const { build } = require("@embroider/compat");
+const { build } = require('@embroider/compat');
 
 module.exports = function (defaults) {
   return build(defaults, {
@@ -8,12 +8,10 @@ module.exports = function (defaults) {
     staticAddonTestSupportTrees: true,
     staticHelpers: true,
     staticComponents: true,
-    staticModifiers: true,
-    staticEmberSource: true,
     skipBabel: [
       {
-        package: "qunit",
-      },
-    ],
+        package: 'qunit'
+      }
+    ]
   });
 }; 
