@@ -79,6 +79,14 @@ function _setSpoilerAuthVisible(element) {
 
 function toggleSpoilerAuth(event, element) {
   if (element.getAttribute("data-spoiler-auth-state") === "blurred") {
+    // Check if user is logged in
+    const currentUser = window.Discourse.__container__.lookup("service:current-user");
+    if (!currentUser) {
+      // If not logged in, show login modal
+      const modal = window.Discourse.__container__.lookup("service:modal");
+      modal.show("login");
+      return;
+    }
     _setSpoilerAuthVisible(element);
     event.preventDefault();
   } else if (!isInteractive(event) && noTextSelected()) {

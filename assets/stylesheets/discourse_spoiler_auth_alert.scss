@@ -15,6 +15,27 @@
   @include unselectable;
   cursor: pointer;
   filter: blur(0.5em);
+  position: relative;
+
+  &::after {
+    content: "🔒 Login to reveal";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  &:hover::after {
+    opacity: 1;
+  }
 
   a,
   area,
