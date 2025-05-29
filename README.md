@@ -2,7 +2,7 @@
 
 https://meta.discourse.org/t/discourse-spoiler-alert-auth/12650/
 
-Spoiler plugin for [Discourse](http://discourse.org) that requires users to be logged in to reveal content. Highly inspired by the [spoiler-alert](http://joshbuddy.github.io/spoiler-alert/) jQuery plugin.
+Spoiler plugin for [Discourse](http://discourse.org) that requires users to be logged in to reveal content.
 
 ## Usage
 
